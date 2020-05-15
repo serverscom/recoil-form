@@ -1,0 +1,26 @@
+{
+  "name": "recoil-form",
+  "version": "0.0.1",
+  "description": "Blazing fast React forms build on top of Recoil",
+  "main": "index.js",
+  "repository": "https://github.com/afitiskin/recoil-form.git",
+  "author": {
+    "name": "Alex Fitiskin",
+    "email": "alexfitiskin@gmail.com"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "license": "MIT",
+  "private": false,
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "recoil": "^0.0.7"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
