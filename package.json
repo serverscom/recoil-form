@@ -2,25 +2,63 @@
   "name": "recoil-form",
   "version": "0.0.1",
   "description": "Blazing fast React forms build on top of Recoil",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/recoil-form.esm.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
   "repository": "https://github.com/afitiskin/recoil-form.git",
   "author": {
     "name": "Alex Fitiskin",
     "email": "alexfitiskin@gmail.com"
   },
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "build": "tsdx build",
+    "prebuild": "rimraf dist",
+    "start": "tsdx watch",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "test:watch": "tsdx test --watch",
+    "test:coverage": "tsdx test --coverage"
   },
   "license": "MIT",
   "private": false,
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
   "peerDependencies": {
-    "react": "^16.13.1",
-    "recoil": "^0.0.7"
+    "react": ">=16",
+    "recoil": ">=0.0.7"
   },
   "devDependencies": {
-    "jest": "^26.0.1",
+    "@types/lodash": "^4.14.151",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "husky": "^4.2.5",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "recoil": "^0.0.7",
+    "tsdx": "^0.13.2",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.2"
+  },
+  "dependencies": {
+    "contexts": "^0.0.0",
+    "lodash": "^4.17.15",
+    "lodash-es": "^4.17.15"
   }
 }
