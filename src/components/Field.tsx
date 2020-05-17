@@ -13,13 +13,12 @@ const Field: React.FC<IRecoilFieldProps> = ({
   as: Component = 'input',
   ...props
 }) => {
-  const { value, onBlur, onChange } = useField(name);
+  const [inputProps] = useField(name);
   return (
     <Component
       {...props}
-      value={value === undefined ? '' : value}
-      onChange={onChange}
-      onBlur={onBlur}
+      {...inputProps}
+      value={inputProps.value === undefined ? '' : inputProps.value}
     />
   );
 };
