@@ -1,15 +1,13 @@
 import React from 'react';
 // @ts-expect-error
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import useFormKey from './useFormKey';
 import useFieldKey from './useFieldKey';
+import useFieldValue from './useFieldValue';
+import useSetFieldValue from './useSetFieldValue';
 import { getFormFieldsAtom } from '../atoms/form';
-import {
-  getFieldValueAtom,
-  getFieldMountedAtom,
-  getFieldTouchedAtom,
-} from '../atoms/field';
+import { getFieldMountedAtom, getFieldTouchedAtom } from '../atoms/field';
 
 export interface IFieldInputProps<TValue> {
   name: string;
@@ -31,9 +29,8 @@ export default function useField<TValue>(
   const formKey = useFormKey();
   const key = useFieldKey(name);
 
-  const [value, setValue] = useRecoilState(
-    getFieldValueAtom(key, initialValue)
-  );
+  const value = useFieldValue(name, initialValue);
+  const setValue = useSetFieldValue(name);
   const setFormFields = useSetRecoilState(getFormFieldsAtom(formKey));
 
   const setMounted = useSetRecoilState(getFieldMountedAtom(key));
@@ -63,11 +60,11 @@ export default function useField<TValue>(
     return () => {
       setMounted(false);
     };
-  }, [key, setFormFields, setMounted]);
+  }, [name, key, setFormFields, setMounted]);
 
   return [
     { name, value, onBlur, onChange },
     {},
-    { setValue, setTouched, setError }
+    { setValue, setTouched, setError },
   ];
 }
