@@ -1,12 +1,8 @@
-// @ts-expect-error
-import { atom } from 'recoil';
-import memoize from 'lodash/memoize';
+import { defineAtom } from './cache';
 
-export const getFormFieldsAtom = memoize((key: string) => {
-  return atom({
+export const getFormFieldsAtom = defineAtom((key: string) => {
+  return {
     key,
     default: {},
-  });
+  };
 });
-
-

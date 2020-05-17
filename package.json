@@ -57,8 +57,6 @@
     "typescript": "^3.9.2"
   },
   "dependencies": {
-    "contexts": "^0.0.0",
-    "lodash": "^4.17.15",
-    "lodash-es": "^4.17.15"
+    "contexts": "^0.0.0"
   }
 }

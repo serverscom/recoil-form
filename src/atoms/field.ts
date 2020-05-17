@@ -1,50 +1,51 @@
-// @ts-expect-error
-import { atom, selector } from 'recoil';
-import memoize from 'lodash/memoize';
+import { defineAtom, defineSelector } from './cache';
 
 import { FIELD_INITIAL_VAlUE } from '../constants';
 
-export const getFieldInitialValueAtom = memoize((key: string) => {
-  return atom({
-    key: `${key}/initialValue`,
-    default: undefined,
-  });
-});
+export const getFieldInitialValueAtom = defineAtom(
+  <TValue>(key: string, value?: TValue) => {
+    return {
+      key: `${key}/initialValue`,
+      default: value,
+    };
+  }
+);
 
-export const getFieldCurrentValueAtom = memoize((key: string) => {
-  return atom({
+export const getFieldCurrentValueAtom = defineAtom((key: string) => {
+  return {
     key: `${key}/currentValue`,
     default: FIELD_INITIAL_VAlUE,
-  });
+  };
 });
 
-export const getFieldValueAtom = memoize((key: string) => {
-  const initialValueAtom = getFieldInitialValueAtom(key);
-  const currentValueAtom = getFieldCurrentValueAtom(key);
+export const getFieldValueAtom = defineSelector(
+  <TValue>(key: string, initialValue?: TValue) => {
+    const initialValueAtom = getFieldInitialValueAtom(key, initialValue);
+    const currentValueAtom = getFieldCurrentValueAtom(key);
 
-  return selector({
-    key: `${key}/value`,
-    // @ts-expect-error
-    get: ({ get }) => {
-      const currentValue = get(currentValueAtom);
-      return currentValue === FIELD_INITIAL_VAlUE ? get(initialValueAtom) : currentValue;
-    },
-    // @ts-expect-error
-    set: ({ set }, newValue) => set(currentValueAtom, newValue),
-  });
-});
+    return {
+      key: `${key}/value`,
+      get: ({ get }) => {
+        const currentValue = get(currentValueAtom);
+        return currentValue === FIELD_INITIAL_VAlUE
+          ? get(initialValueAtom)
+          : currentValue;
+      },
+      set: ({ set }, newValue) => set(currentValueAtom, newValue),
+    };
+  }
+);
 
-export const getFieldMountedAtom = memoize((key: string) => {
-  return atom({
+export const getFieldMountedAtom = defineAtom((key: string) => {
+  return {
     key: `${key}/mounted`,
     default: true,
-  });
+  };
 });
 
-export const getFieldTouchedAtom = memoize((key: string) => {
-  return atom({
+export const getFieldTouchedAtom = defineAtom((key: string) => {
+  return {
     key: `${key}/touched`,
     default: false,
-  });
+  };
 });
-
