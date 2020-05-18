@@ -2,6 +2,14 @@
   "name": "recoil-form",
   "version": "0.0.1",
   "description": "Blazing fast React forms build on top of Recoil",
+  "keywords": [
+    "recoil",
+    "form",
+    "forms",
+    "hooks",
+    "validation",
+    "react"
+  ],
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/recoil-form.esm.js",
@@ -13,10 +21,18 @@
     "node": ">=10"
   },
   "repository": "https://github.com/afitiskin/recoil-form.git",
+  "homepage": "https://github.com/afitiskin/recoil-formt#readme",
   "author": {
     "name": "Alex Fitiskin",
     "email": "alexfitiskin@gmail.com"
   },
+  "contributors": [{
+    "name": "Alex Fitiskin",
+    "email": "alexfitiskin@gmail.com"
+  }, {
+    "name": "Anton Evzhakov",
+    "email": "anton@evz.name"
+  }],
   "scripts": {
     "build": "tsdx build",
     "prebuild": "rimraf dist",
