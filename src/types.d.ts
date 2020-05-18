@@ -1,4 +1,6 @@
 declare module 'recoil' {
+  import React from 'react';
+
   type NodeKey = string;
 
   interface AbstractRecoilValue<T> {
@@ -48,4 +50,9 @@ declare module 'recoil' {
   function selector<T>(
     options: ReadOnlySelectorOptions<T> | ReadWriteSelectorOptions<T>
   ): RecoilValue<T>;
+
+  function useRecoilValue<TValue>(state: RecoilValue<TValue>): TValue;
+  function useSetRecoilState<TValue>(
+    state: RecoilState<TValue>
+  ): React.Dispatch<React.SetStateAction<TValue>>;
 }

@@ -11,17 +11,17 @@ export const getFieldInitialValueAtom = defineAtom(
   }
 );
 
-export const getFieldCurrentValueAtom = defineAtom((key: string) => {
+export const getFieldCurrentValueAtom = defineAtom(<TValue>(key: string) => {
   return {
     key: `${key}/currentValue`,
-    default: FIELD_INITIAL_VAlUE,
+    default: FIELD_INITIAL_VAlUE as TValue | typeof FIELD_INITIAL_VAlUE,
   };
 });
 
 export const getFieldValueAtom = defineSelector(
   <TValue>(key: string, initialValue?: TValue) => {
     const initialValueAtom = getFieldInitialValueAtom(key, initialValue);
-    const currentValueAtom = getFieldCurrentValueAtom(key);
+    const currentValueAtom = getFieldCurrentValueAtom<TValue>(key);
 
     return {
       key: `${key}/value`,
@@ -36,10 +36,10 @@ export const getFieldValueAtom = defineSelector(
   }
 );
 
-export const getFieldMountedAtom = defineAtom((key: string) => {
+export const getFieldRefCounterAtom = defineAtom((key: string) => {
   return {
-    key: `${key}/mounted`,
-    default: true,
+    key: `${key}/ref_counter`,
+    default: 0,
   };
 });
 

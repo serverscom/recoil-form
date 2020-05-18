@@ -1,4 +1,3 @@
-// @ts-expect-error
 import { useSetRecoilState } from 'recoil';
 
 import useFieldKey from './useFieldKey';

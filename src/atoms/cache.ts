@@ -22,16 +22,16 @@ interface IValue {
 
 const cache: Cache = {};
 
-function define<TArgs extends any[]>(
+function define<TValue, TArgs extends any[]>(
   creator: typeof atom,
-  optionsGetter: (...args: TArgs) => AtomOptions<any>
-): (...args: TArgs) => RecoilState<any>;
-function define<TArgs extends any[]>(
+  optionsGetter: (...args: TArgs) => AtomOptions<TValue>
+): (...args: TArgs) => RecoilState<TValue>;
+function define<TValue, TArgs extends any[]>(
   creator: typeof selector,
   optionsGetter: (
     ...args: TArgs
-  ) => ReadOnlySelectorOptions<any> | ReadWriteSelectorOptions<any>
-): (...args: TArgs) => RecoilValue<any>;
+  ) => ReadOnlySelectorOptions<TValue> | ReadWriteSelectorOptions<TValue>
+): (...args: TArgs) => RecoilValue<TValue>;
 function define(creator: any, optionsGetter: any) {
   return (...args: any[]) => {
     const options = optionsGetter(...args);
@@ -53,18 +53,18 @@ function define(creator: any, optionsGetter: any) {
   };
 }
 
-export function defineAtom<TArgs extends any[]>(
-  fn: (...args: TArgs) => AtomOptions<any>
+export function defineAtom<TValue, TArgs extends any[]>(
+  fn: (...args: TArgs) => AtomOptions<TValue>
 ) {
   return define(atom, fn);
 }
 
-export function defineSelector<TArgs extends any[]>(
+export function defineSelector<TValue, TArgs extends any[]>(
   fn: (
     ...args: TArgs
-  ) => ReadOnlySelectorOptions<any> | ReadWriteSelectorOptions<any>
+  ) => ReadOnlySelectorOptions<TValue> | ReadWriteSelectorOptions<TValue>
 ) {
-  return define(selector, fn);
+  return define<TValue, TArgs>(selector, fn);
 }
 
 export function release(key: string): void {

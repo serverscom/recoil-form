@@ -26,13 +26,16 @@
     "name": "Alex Fitiskin",
     "email": "alexfitiskin@gmail.com"
   },
-  "contributors": [{
-    "name": "Alex Fitiskin",
-    "email": "alexfitiskin@gmail.com"
-  }, {
-    "name": "Anton Evzhakov",
-    "email": "anton@evz.name"
-  }],
+  "contributors": [
+    {
+      "name": "Alex Fitiskin",
+      "email": "alexfitiskin@gmail.com"
+    },
+    {
+      "name": "Anton Evzhakov",
+      "email": "anton@evz.name"
+    }
+  ],
   "scripts": {
     "build": "tsdx build",
     "prebuild": "rimraf dist",
@@ -68,6 +71,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "recoil": "^0.0.7",
+    "ts-toolbelt": "^6.7.7",
     "tsdx": "^0.13.2",
     "tslib": "^2.0.0",
     "typescript": "^3.9.2"

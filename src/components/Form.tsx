@@ -6,7 +6,11 @@ import FormKey from '../contexts/FormKey';
 import uniqueId from '../utils/uniqueId';
 import getFieldKey from '../utils/getFieldKey';
 import { getFormFieldsAtom } from '../atoms/form';
-import { getFieldValueAtom, getFieldInitialValueAtom } from '../atoms/field';
+import {
+  getFieldValueAtom,
+  getFieldInitialValueAtom,
+  getFieldRefCounterAtom,
+} from '../atoms/field';
 import { release } from '../atoms/cache';
 
 interface IRecoilFormProps extends React.HTMLAttributes<HTMLFormElement> {
@@ -53,9 +57,13 @@ const Form: React.FC<IRecoilFormProps> = ({ initialValues = {}, ...props }) => {
         Object.entries(fields)
           // @ts-ignore
           .map(([fieldKey, fieldName]) =>
-            getPromise(getFieldValueAtom(fieldKey)).then((fieldValue: any) => ({
+            Promise.all([
+              getPromise(getFieldValueAtom(fieldKey)),
+              getPromise(getFieldRefCounterAtom(fieldKey)),
+            ]).then(([value, refs]) => ({
               name: fieldName,
-              value: fieldValue,
+              value,
+              refs,
             }))
           )
       );
