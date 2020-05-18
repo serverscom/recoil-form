@@ -80,5 +80,7 @@ export function release(key: string): void {
     }
   }
 
-  if (node && lastSegment) delete node[lastSegment];
+  if (node && lastSegment) {
+    delete node[lastSegment];
+  }
 }

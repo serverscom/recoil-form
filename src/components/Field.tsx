@@ -1,7 +1,7 @@
 import * as React from 'react';
 import useField from '../hooks/useField';
 
-interface IRecoilFieldProps extends JSX.IntrinsicAttributes {
+export interface IRecoilFieldProps extends JSX.IntrinsicAttributes {
   name: string;
   type: string;
   as?: React.ElementType;

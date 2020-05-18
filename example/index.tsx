@@ -7,6 +7,7 @@ import { Form, Field } from '../dist';
 
 const initialValues = {
   email: 'some@email.com',
+  delayed: new Promise((resolve) => setTimeout(() => resolve('delayed value'), 3000)),
 };
 
 const App = () => {
@@ -24,6 +25,12 @@ const App = () => {
             <label>
               Password:
               <Field name="password" type="password" />
+            </label>
+          </div>
+          <div>
+            <label>
+              Delayed field:
+              <Field name="delayed" type="text" fallback="loading..." />
             </label>
           </div>
           <div>
