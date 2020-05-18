@@ -34,6 +34,12 @@ const App = () => {
             </label>
           </div>
           <div>
+            <label>
+              <Field name="checkbox" type="checkbox" />
+              Checkbox
+            </label>
+          </div>
+          <div>
             <button type="submit">Login</button>
             <button type="reset">Reset</button>
           </div>

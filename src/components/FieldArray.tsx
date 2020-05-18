@@ -1,3 +1,3 @@
 export default function FieldArray() {
-  throw new Error('Sorry, `Field` component is not implemented yet!');
+  throw new Error('Sorry, `FieldArray` component is not implemented yet!');
 }

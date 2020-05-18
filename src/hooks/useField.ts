@@ -42,13 +42,6 @@ export default function useField<TValue>(
     setTouched(true);
   }, [setTouched]);
 
-  const onChange = React.useCallback(
-    event => {
-      setValue(event.target.value);
-    },
-    [setValue]
-  );
-
   React.useEffect(() => {
     // register field
     setFormFields((fields: {}) => ({
@@ -63,7 +56,7 @@ export default function useField<TValue>(
   }, [name, key, setFormFields, setMounted]);
 
   return [
-    { name, value, onBlur, onChange },
+    { name, value, onBlur, onChange: setValue },
     {},
     { setValue, setTouched, setError },
   ];
