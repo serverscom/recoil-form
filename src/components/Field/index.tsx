@@ -11,7 +11,10 @@ interface IRecoilFieldProps extends JSX.IntrinsicAttributes {
   fallback?: React.ReactNode;
 }
 
-const getComponent = (component: React.ElementType, type?: string): React.ElementType => {
+const getComponent = (
+  component: React.ElementType,
+  type?: string
+): React.ElementType => {
   if (component === 'input') {
     switch (type) {
       case 'checkbox':
@@ -30,11 +33,11 @@ const getComponent = (component: React.ElementType, type?: string): React.Elemen
   }
 
   return component;
-}
+};
 
 const Field: React.FC<IRecoilFieldProps> = ({
   type,
-  as= 'input',
+  as = 'input',
   fallback = null,
   ...props
 }) => {
