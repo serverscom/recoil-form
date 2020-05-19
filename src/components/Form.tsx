@@ -5,11 +5,10 @@ import { useRecoilCallback } from 'recoil';
 import FormKey from '../contexts/FormKey';
 import uniqueId from '../utils/uniqueId';
 import getFieldKey from '../utils/getFieldKey';
-import { getFormFieldsAtom } from '../atoms/form';
+import { getFormValuesState, getFormFieldsAtom } from '../atoms/form';
 import {
   getFieldValueAtom,
   getFieldInitialValueAtom,
-  getFieldRefCounterAtom,
 } from '../atoms/field';
 import { release } from '../atoms/cache';
 
@@ -52,22 +51,7 @@ const Form: React.FC<IRecoilFormProps> = ({ initialValues = {}, ...props }) => {
 
   const logFormValues = useRecoilCallback(
     async ({ getPromise }: IRecoilCallbackParams) => {
-      const fields = await getPromise(getFormFieldsAtom(key));
-      const values = await Promise.all(
-        Object.entries(fields)
-          // @ts-ignore
-          .map(([fieldKey, fieldName]) =>
-            Promise.all([
-              getPromise(getFieldValueAtom(fieldKey)),
-              getPromise(getFieldRefCounterAtom(fieldKey)),
-            ]).then(([value, refs]) => ({
-              name: fieldName,
-              value,
-              refs,
-            }))
-          )
-      );
-
+      const values = await getPromise(getFormValuesState(key));
       console.log(values);
     },
     [key]
