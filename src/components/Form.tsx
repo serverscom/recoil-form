@@ -1,22 +1,29 @@
 import * as React from 'react';
 // @ts-expect-error
 import { useRecoilCallback } from 'recoil';
+import { O } from 'ts-toolbelt';
 
 import FormKey from '../contexts/FormKey';
 import uniqueId from '../utils/uniqueId';
 import getFieldKey from '../utils/getFieldKey';
 import { getFormValuesState, getFormFieldsAtom } from '../atoms/form';
-import {
-  getFieldValueAtom,
-  getFieldInitialValueAtom,
-} from '../atoms/field';
+import { getFieldValueAtom, getFieldInitialValueAtom } from '../atoms/field';
 import { release } from '../atoms/cache';
 
-interface IRecoilFormProps extends React.HTMLAttributes<HTMLFormElement> {
-  initialValues?: {
-    [key: string]: any;
-  };
+interface IRecoilFormOwnProps<TValue extends {}> {
+  initialValues?: Partial<TValue>;
+  onSubmit?(values: TValue): void;
 }
+
+type MergeProps<TTarget extends {}, TSource extends {}> = O.Merge<
+  O.Overwrite<TTarget, TSource>,
+  TSource
+>;
+
+export type RecoilFormAllProps<TValue extends {}> = MergeProps<
+  React.HTMLAttributes<HTMLFormElement>,
+  IRecoilFormOwnProps<TValue>
+>;
 
 interface IRecoilCallbackParams {
   getPromise: (atom: any) => Promise<any>;
@@ -25,9 +32,14 @@ interface IRecoilCallbackParams {
   reset: (atom: any) => void;
 }
 
-const Form: React.FC<IRecoilFormProps> = ({ initialValues = {}, ...props }) => {
+const Form = <TValue extends {}>({
+  initialValues = {},
+  onSubmit,
+  ...props
+}: RecoilFormAllProps<
+  TValue
+>): React.ReactComponentElement<typeof FormKey.Provider> => {
   const key = React.useMemo(() => uniqueId(), []);
-  console.log('render form', key);
 
   const setInitialValues = useRecoilCallback(
     async ({ set }: IRecoilCallbackParams) => {
@@ -49,27 +61,29 @@ const Form: React.FC<IRecoilFormProps> = ({ initialValues = {}, ...props }) => {
     [key]
   );
 
-  const logFormValues = useRecoilCallback(
+  const submitForm = useRecoilCallback(
     async ({ getPromise }: IRecoilCallbackParams) => {
+      if (onSubmit === undefined) {
+        return;
+      }
+
       const values = await getPromise(getFormValuesState(key));
-      console.log(values);
+      onSubmit(values);
     },
-    [key]
+    [key, onSubmit]
   );
 
-  const onSubmit = React.useCallback(
+  const onFormSubmit = React.useCallback(
     event => {
       event.preventDefault();
-      console.log('submitted!');
-      logFormValues();
+      submitForm();
     },
-    [logFormValues]
+    [submitForm]
   );
 
   const onReset = React.useCallback(
     event => {
       event.preventDefault();
-      console.log('reset!');
       resetForm();
     },
     [resetForm]
@@ -82,7 +96,7 @@ const Form: React.FC<IRecoilFormProps> = ({ initialValues = {}, ...props }) => {
 
   return (
     <FormKey.Provider value={key}>
-      <form {...props} onSubmit={onSubmit} onReset={onReset} />
+      <form {...props} onSubmit={onFormSubmit} onReset={onReset} />
     </FormKey.Provider>
   );
 };

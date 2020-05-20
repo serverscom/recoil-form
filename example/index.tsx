@@ -12,6 +12,8 @@ const initialValues = {
   ),
 };
 
+const onSubmit = (values) => console.log(values);
+
 const Values = () => {
   const values = useFormValues();
   return <pre>{JSON.stringify(values, null, 2)}</pre>;
@@ -55,7 +57,7 @@ const FieldSet = () => {
 const App = () => {
   return (
     <RecoilRoot>
-      <Form initialValues={initialValues}>
+      <Form initialValues={initialValues} onSubmit={onSubmit}>
         <FieldSet />
         <React.Suspense fallback={<div>Loading…</div>}>
           {' '}
