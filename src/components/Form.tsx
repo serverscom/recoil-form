@@ -9,6 +9,7 @@ import getFieldKey from '../utils/getFieldKey';
 import {
   getFormErrorsState,
   getFormFieldsAtom,
+  getFormStateAtom,
   getFormValuesState,
 } from '../atoms/form';
 import { getFieldValueAtom, getFieldInitialValueAtom } from '../atoms/field';
@@ -88,13 +89,15 @@ const Form = <TValue extends {}>({
   );
 
   const submitForm = useRecoilCallback(
-    async ({ getPromise }: IRecoilCallbackParams) => {
+    async ({ getPromise, set }: IRecoilCallbackParams) => {
       if (onSubmit === undefined) {
         return;
       }
 
+      set(getFormStateAtom(key), "submitting");
       const values = await getPromise(getFormValuesState(key));
-      onSubmit(values, formActions);
+      await onSubmit(values, formActions);
+      set(getFormStateAtom(key), "ready");
     },
     [formActions, key, onSubmit]
   );

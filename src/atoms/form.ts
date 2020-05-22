@@ -1,6 +1,15 @@
 import { defineAtom, defineSelector } from './cache';
 import { getFieldErrorState, getFieldValueAtom } from './field';
-import getFieldKey from "../utils/getFieldKey";
+import getFieldKey from '../utils/getFieldKey';
+
+export const getFormStateAtom = defineAtom<
+  'ready' | 'submitting'
+>((key: string) => {
+  return {
+    key: `${key}/$state`,
+    default: 'ready',
+  };
+});
 
 export const getFormFieldsAtom = defineAtom((key: string) => {
   return {

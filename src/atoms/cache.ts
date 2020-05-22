@@ -53,7 +53,7 @@ function define(creator: any, optionsGetter: any) {
   };
 }
 
-export function defineAtom<TValue, TArgs extends any[]>(
+export function defineAtom<TValue, TArgs extends any[] = [string]>(
   fn: (...args: TArgs) => AtomOptions<TValue>
 ) {
   return define(atom, fn);

@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 
-import { Form, Field, useFormValues } from '../dist';
+import { Form, Field, useFormState, useFormValues } from '../dist';
 
 const initialValues = {
   email: 'some@email.com',
@@ -12,11 +12,22 @@ const initialValues = {
   ),
 };
 
-const onSubmit = (values) => console.log(values);
+const onSubmit = values => new Promise(resolve =>
+  setTimeout(() => {
+    console.log(values)
+    resolve();
+  }, 3000)
+);
 
 const Values = () => {
+  const state = useFormState();
   const values = useFormValues();
-  return <pre>{JSON.stringify(values, null, 2)}</pre>;
+  return (
+    <>
+      <h4>State: {state}</h4>
+      <pre>{JSON.stringify(values, null, 2)}</pre>
+    </>
+  );
 };
 
 const FieldSet = () => {
