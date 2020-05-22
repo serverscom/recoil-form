@@ -1,18 +1,27 @@
 import * as React from 'react';
 // @ts-expect-error
-import { useRecoilCallback } from 'recoil';
+import { useRecoilCallback, useSetRecoilState } from 'recoil';
 import { O } from 'ts-toolbelt';
 
 import FormKey from '../contexts/FormKey';
 import uniqueId from '../utils/uniqueId';
 import getFieldKey from '../utils/getFieldKey';
-import { getFormValuesState, getFormFieldsAtom } from '../atoms/form';
+import {
+  getFormErrorsState,
+  getFormFieldsAtom,
+  getFormValuesState,
+} from '../atoms/form';
 import { getFieldValueAtom, getFieldInitialValueAtom } from '../atoms/field';
 import { release } from '../atoms/cache';
 
+export interface IFormActions<TValue extends {}> {
+  setErrors(field: keyof TValue, error: any): void;
+  setValues<TKey extends keyof TValue>(field: TKey, value: TValue[TKey]): void;
+}
+
 interface IRecoilFormOwnProps<TValue extends {}> {
   initialValues?: Partial<TValue>;
-  onSubmit?(values: TValue): void;
+  onSubmit?(values: TValue, formActions: IFormActions<TValue>): void;
 }
 
 type MergeProps<TTarget extends {}, TSource extends {}> = O.Merge<
@@ -40,6 +49,23 @@ const Form = <TValue extends {}>({
   TValue
 >): React.ReactComponentElement<typeof FormKey.Provider> => {
   const key = React.useMemo(() => uniqueId(), []);
+  const setFormErrors = useSetRecoilState(getFormErrorsState(key));
+
+  const setErrors = React.useCallback((field: keyof TValue, error: any) => {
+    setFormErrors({
+      [field]: error,
+    });
+  }, [setFormErrors]);
+
+  const setValues = () => void 0;
+
+  const formActions = React.useMemo(
+    () => ({
+      setErrors,
+      setValues,
+    }),
+    [setErrors, setValues]
+  );
 
   const setInitialValues = useRecoilCallback(
     async ({ set }: IRecoilCallbackParams) => {
@@ -68,9 +94,9 @@ const Form = <TValue extends {}>({
       }
 
       const values = await getPromise(getFormValuesState(key));
-      onSubmit(values);
+      onSubmit(values, formActions);
     },
-    [key, onSubmit]
+    [formActions, key, onSubmit]
   );
 
   const onFormSubmit = React.useCallback(

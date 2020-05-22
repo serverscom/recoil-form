@@ -7,7 +7,7 @@ import { getFieldValueAtom } from '../atoms/field';
  * Return a value setter for the specified field
  * @param name
  */
-export default function useSetFieldValue(name: string) {
+export default function useSetFieldValue<TValue = unknown>(name: string) {
   const key = useFieldKey(name);
-  return useSetRecoilState(getFieldValueAtom(key));
+  return useSetRecoilState(getFieldValueAtom<TValue>(key));
 }

@@ -5,6 +5,5 @@ import { getFormValuesState } from '../atoms/form';
 
 export default function useFormValues() {
   const key = useFormKey();
-  const values = useRecoilValue(getFormValuesState(key));
-  return values;
+  return useRecoilValue(getFormValuesState(key));
 }

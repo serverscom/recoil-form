@@ -76,7 +76,5 @@
     "tslib": "^2.0.0",
     "typescript": "^3.9.2"
   },
-  "dependencies": {
-    "contexts": "^0.0.0"
-  }
+  "dependencies": {}
 }

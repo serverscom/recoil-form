@@ -49,3 +49,28 @@ export const getFieldTouchedAtom = defineAtom((key: string) => {
     default: false,
   };
 });
+
+export const getFieldErrorAtom = defineAtom(<TValue>(key: string) => {
+  return {
+    key: `${key}/$errorAtom`,
+    default: null as (TValue | null),
+  };
+});
+
+export const getFieldErrorState = defineSelector(<TValue>(key: string) => {
+  return {
+    key: `${key}/$errorSelector`,
+    get({ get }) {
+      return get(getFieldErrorAtom<TValue>(key));
+    },
+    set({ get, set }, error) {
+      const currentError = get(getFieldErrorAtom<TValue>(key));
+      if (currentError === error) {
+        // `set` itself doesn't check a previous value and always triggers reloading of the whole tree
+        return;
+      }
+
+      set(getFieldErrorAtom<TValue>(key), error);
+    },
+  }
+})

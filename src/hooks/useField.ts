@@ -3,6 +3,7 @@ import { useSetRecoilState } from 'recoil';
 
 import useFieldKey from './useFieldKey';
 import useFieldValue from './useFieldValue';
+import useSetFieldError from './useSetFieldError';
 import useSetFieldValue from './useSetFieldValue';
 import { getFieldTouchedAtom } from '../atoms/field';
 
@@ -31,9 +32,9 @@ function useField<TValue>(
 
   const value = useFieldValue(name, initialValue);
   const setValue = useSetFieldValue(name);
+  const setError = useSetFieldError(name);
 
   const setTouched = useSetRecoilState(getFieldTouchedAtom(key));
-  const setError = () => void 0;
 
   // TODO: onBlur
   const onBlur = React.useCallback(() => {
