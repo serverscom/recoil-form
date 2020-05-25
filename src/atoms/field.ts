@@ -25,52 +25,58 @@ export const getFieldValueAtom = defineSelector(
 
     return {
       key: `${key}/$value`,
-      get: ({ get }) => {
+      get({ get }) {
         const currentValue = get(currentValueAtom);
         return currentValue === FIELD_INITIAL_VAlUE
           ? get(initialValueAtom)
           : currentValue;
       },
-      set: ({ set }, newValue) => set(currentValueAtom, newValue),
+      set({ get, set }, newValue) {
+        const currentValue = get(currentValueAtom);
+        if (currentValue !== newValue) {
+          // only update when value is changed
+          set(currentValueAtom, newValue);
+        }
+      },
     };
   }
 );
 
 export const getFieldRefCounterAtom = defineAtom((key: string) => {
   return {
-    key: `${key}/$ref_counter`,
+    key: `${key}/$refCounter`,
     default: 0,
   };
 });
 
-export const getFieldTouchedAtom = defineAtom((key: string) => {
+export const getFieldTouchedAtom = defineAtom<boolean>((key: string) => {
   return {
     key: `${key}/$touched`,
     default: false,
   };
 });
 
-export const getFieldErrorAtom = defineAtom(<TValue>(key: string) => {
+export const getFieldErrorInternalAtom = defineAtom(<TValue>(key: string) => {
   return {
     key: `${key}/$errorAtom`,
-    default: null as (TValue | null),
+    default: null as TValue | null,
   };
 });
 
-export const getFieldErrorState = defineSelector(<TValue>(key: string) => {
+export const getFieldErrorAtom = defineSelector(<TValue>(key: string) => {
+  const atom = getFieldErrorInternalAtom<TValue>(key);
+
   return {
     key: `${key}/$errorSelector`,
     get({ get }) {
-      return get(getFieldErrorAtom<TValue>(key));
+      return get(atom);
     },
     set({ get, set }, error) {
-      const currentError = get(getFieldErrorAtom<TValue>(key));
-      if (currentError === error) {
-        // `set` itself doesn't check a previous value and always triggers reloading of the whole tree
-        return;
+      const currentError = get(atom);
+      if (currentError !== error) {
+        // only update when value is changed
+        set(atom, error);
       }
-
-      set(getFieldErrorAtom<TValue>(key), error);
     },
-  }
-})
+  };
+});

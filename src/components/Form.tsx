@@ -6,13 +6,19 @@ import { O } from 'ts-toolbelt';
 import FormKey from '../contexts/FormKey';
 import uniqueId from '../utils/uniqueId';
 import getFieldKey from '../utils/getFieldKey';
+import toPairs from '../utils/toPairs';
 import {
-  getFormErrorsState,
+  getFormErrorsAtom,
   getFormFieldsAtom,
   getFormStateAtom,
-  getFormValuesState,
+  getFormValuesAtom,
 } from '../atoms/form';
-import { getFieldValueAtom, getFieldInitialValueAtom } from '../atoms/field';
+import {
+  getFieldValueAtom,
+  getFieldInitialValueAtom,
+  getFieldTouchedAtom,
+  getFieldErrorAtom,
+} from '../atoms/field';
 import { release } from '../atoms/cache';
 
 export interface IFormActions<TValue extends {}> {
@@ -50,22 +56,25 @@ const Form = <TValue extends {}>({
   TValue
 >): React.ReactComponentElement<typeof FormKey.Provider> => {
   const key = React.useMemo(() => uniqueId(), []);
-  const setFormErrors = useSetRecoilState(getFormErrorsState(key));
+  const setFormValues = useSetRecoilState(getFormValuesAtom(key));
+  const setFormErrors = useSetRecoilState(getFormErrorsAtom(key));
 
-  const setErrors = React.useCallback((field: keyof TValue, error: any) => {
-    setFormErrors({
-      [field]: error,
-    });
-  }, [setFormErrors]);
+  const setValues = React.useCallback(
+    (...args) => {
+      const values =
+        args.length === 1 ? args[0] : Object.fromEntries(toPairs(args));
+      setFormValues(values);
+    },
+    [setFormValues]
+  );
 
-  const setValues = () => void 0;
-
-  const formActions = React.useMemo(
-    () => ({
-      setErrors,
-      setValues,
-    }),
-    [setErrors, setValues]
+  const setErrors = React.useCallback(
+    (...args) => {
+      const errors =
+        args.length === 1 ? args[0] : Object.fromEntries(toPairs(args));
+      setFormErrors(errors);
+    },
+    [setFormErrors]
   );
 
   const setInitialValues = useRecoilCallback(
@@ -83,9 +92,20 @@ const Form = <TValue extends {}>({
       const fields = await getPromise(getFormFieldsAtom(key));
       Object.keys(fields).forEach(fieldKey => {
         reset(getFieldValueAtom(fieldKey));
+        reset(getFieldTouchedAtom(fieldKey));
+        reset(getFieldErrorAtom(fieldKey));
       });
     },
     [key]
+  );
+
+  const formActions = React.useMemo(
+    () => ({
+      setErrors,
+      setValues,
+      resetForm,
+    }),
+    [setErrors, setValues, resetForm]
   );
 
   const submitForm = useRecoilCallback(
@@ -94,10 +114,15 @@ const Form = <TValue extends {}>({
         return;
       }
 
-      set(getFormStateAtom(key), "submitting");
-      const values = await getPromise(getFormValuesState(key));
+      set(getFormStateAtom(key), 'submitting');
+      const fields = await getPromise(getFormFieldsAtom(key));
+      Object.keys(fields).forEach(fieldKey => {
+        const atom = getFieldTouchedAtom(fieldKey);
+        set(atom, true);
+      });
+      const values = await getPromise(getFormValuesAtom(key));
       await onSubmit(values, formActions);
-      set(getFormStateAtom(key), "ready");
+      set(getFormStateAtom(key), 'ready');
     },
     [formActions, key, onSubmit]
   );

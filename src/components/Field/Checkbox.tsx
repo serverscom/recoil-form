@@ -3,18 +3,37 @@ import useField from '../../hooks/useField';
 
 export interface IRecoilCheckboxProps extends JSX.IntrinsicAttributes {
   name: string;
+  onChange: (event: React.ChangeEvent) => any;
+  onBlur: (event: React.FocusEvent) => any;
 }
 
 // TODO: checkbox with value? <input type="checkbox" name="answer" value={42} />
-const Checkbox: React.FC<IRecoilCheckboxProps> = ({ name, ...props }) => {
-  const [{ onChange, ...inputProps }] = useField<boolean>(name);
+const Checkbox: React.FC<IRecoilCheckboxProps> = ({
+  name,
+  onChange: originalOnChange,
+  onBlur: originalOnBlur,
+  ...props
+}) => {
+  const [{ onChange, onBlur, ...inputProps }] = useField<boolean>(name);
 
   const handleChange = React.useCallback(
     event => {
+      if (originalOnChange) {
+        originalOnChange(event);
+      }
       onChange(event.target.checked);
-      // TODO: call original onChange
     },
-    [onChange]
+    [onChange, originalOnChange]
+  );
+
+  const handleBlur = React.useCallback(
+    event => {
+      if (originalOnBlur) {
+        originalOnBlur(event);
+      }
+      onBlur();
+    },
+    [onBlur, originalOnBlur]
   );
 
   return (
@@ -25,6 +44,7 @@ const Checkbox: React.FC<IRecoilCheckboxProps> = ({ name, ...props }) => {
       value={undefined}
       checked={!!inputProps.value}
       onChange={handleChange}
+      onBlur={handleBlur}
     />
   );
 };

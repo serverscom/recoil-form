@@ -1,15 +1,15 @@
 import { defineAtom, defineSelector } from './cache';
-import { getFieldErrorState, getFieldValueAtom } from './field';
+import { getFieldErrorAtom, getFieldValueAtom } from './field';
 import getFieldKey from '../utils/getFieldKey';
 
-export const getFormStateAtom = defineAtom<
-  'ready' | 'submitting'
->((key: string) => {
-  return {
-    key: `${key}/$state`,
-    default: 'ready',
-  };
-});
+export const getFormStateAtom = defineAtom<'ready' | 'submitting'>(
+  (key: string) => {
+    return {
+      key: `${key}/$state`,
+      default: 'ready',
+    };
+  }
+);
 
 export const getFormFieldsAtom = defineAtom((key: string) => {
   return {
@@ -18,44 +18,56 @@ export const getFormFieldsAtom = defineAtom((key: string) => {
   };
 });
 
-export const getFormValuesState = defineSelector((key: string) => {
+export const getFormValuesAtom = defineSelector((key: string) => {
   return {
     key: `${key}/$values`,
     get({ get }) {
+      // TODO: DRY (see getFormErrorsAtom.get)
       const fields = get(getFormFieldsAtom(key));
       return Object.fromEntries(
-        Object.entries(fields).map(([fKey, fName]) => [
-          fName,
-          get(getFieldValueAtom(fKey)),
+        Object.entries(fields).map(([fieldKey, fieldName]) => [
+          fieldName,
+          get(getFieldValueAtom(fieldKey)),
         ])
       );
     },
-    set({ set }, value: any) {
-      for (const [fName, fValue] of Object.entries(value)) {
-        const fieldKey = getFieldKey(key, fName);
-        set(getFieldValueAtom(fieldKey), fValue);
-      }
+    set({ get, set }, values: any) {
+      // TODO: DRY (see getFormErrorsAtom.set)
+      Object.entries(values).forEach(([fieldName, fieldValue]) => {
+        const fieldKey = getFieldKey(key, fieldName);
+        const atom = getFieldValueAtom(fieldKey);
+        const currentValue = get(atom);
+        if (currentValue !== fieldValue) {
+          // only update when value is changed
+          set(atom, fieldValue);
+        }
+      });
     },
   };
 });
 
-export const getFormErrorsState = defineSelector((key: string) => {
+export const getFormErrorsAtom = defineSelector((key: string) => {
   return {
     key: `${key}/$errors`,
     get({ get }) {
       const fields = get(getFormFieldsAtom(key));
       return Object.fromEntries(
-        Object.entries(fields).map(([fKey, fName]) => [
-          fName,
-          get(getFieldErrorState(fKey)),
+        Object.entries(fields).map(([fieldKey, fieldName]) => [
+          fieldName,
+          get(getFieldErrorAtom(fieldKey)),
         ])
       );
     },
-    set({ set }, value: any) {
-      for (const [fName, fError] of Object.entries(value)) {
-        const fieldKey = getFieldKey(key, fName);
-        set(getFieldErrorState(fieldKey), fError);
-      }
+    set({ get, set }, values: any) {
+      Object.entries(values).forEach(([fieldName, fieldError]) => {
+        const fieldKey = getFieldKey(key, fieldName);
+        const atom = getFieldErrorAtom(fieldKey);
+        const currentError = get(atom);
+        if (currentError !== fieldError) {
+          // only update when value is changed
+          set(atom, fieldError);
+        }
+      });
     },
   };
 });

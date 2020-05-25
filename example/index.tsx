@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 
-import { Form, Field, useFormState, useFormValues } from '../dist';
+import { Form, Field, ErrorMessage, useFormState, useFormValues } from '../dist';
 
 const initialValues = {
   email: 'some@email.com',
@@ -12,9 +12,11 @@ const initialValues = {
   ),
 };
 
-const onSubmit = values => new Promise(resolve =>
+const onSubmit = (values, { setValues, setErrors }) => new Promise(resolve =>
   setTimeout(() => {
-    console.log(values)
+    console.log(values);
+    setValues('email', 'another@email.com', 'delayed', 'another value');
+    setErrors({ email: 'already in use', delayed: 'another error' });
     resolve();
   }, 3000)
 );
@@ -37,18 +39,21 @@ const FieldSet = () => {
         <label>
           Email:
           <Field name="email" type="email" />
+          <ErrorMessage name="email" as="div" />
         </label>
       </div>
       <div>
         <label>
           Password:
           <Field name="password" type="password" />
+          <ErrorMessage name="password" as="div" />
         </label>
       </div>
       <div>
         <label>
           Delayed field:
           <Field name="delayed" type="text" fallback="loading..." />
+          <ErrorMessage name="delayed" as="div" />
         </label>
       </div>
       <div>

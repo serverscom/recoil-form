@@ -1,7 +1,7 @@
 import { useSetRecoilState } from 'recoil';
 
 import useFieldKey from './useFieldKey';
-import { getFieldErrorState } from '../atoms/field';
+import { getFieldErrorAtom } from '../atoms/field';
 
 /**
  * Return a error setter for the specified field
@@ -9,6 +9,6 @@ import { getFieldErrorState } from '../atoms/field';
  */
 export default function useSetFieldError<TValue = unknown>(name: string) {
   const key = useFieldKey(name);
-  const atom = getFieldErrorState<TValue>(key);
+  const atom = getFieldErrorAtom<TValue>(key);
   return useSetRecoilState(atom);
 }

@@ -1,7 +1,7 @@
 import { useRecoilValue } from 'recoil';
 
 import useFieldKey from './useFieldKey';
-import { getFieldErrorState } from '../atoms/field';
+import { getFieldErrorAtom } from '../atoms/field';
 
 /**
  * Provides an error for the specified field
@@ -9,7 +9,7 @@ import { getFieldErrorState } from '../atoms/field';
  */
 function useFieldError<TValue = unknown>(name: string): TValue | null {
   const key = useFieldKey(name);
-  const atom = getFieldErrorState<TValue>(key);
+  const atom = getFieldErrorAtom<TValue>(key);
   return useRecoilValue(atom);
 }
 
