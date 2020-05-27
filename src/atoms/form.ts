@@ -2,14 +2,12 @@ import { defineAtom, defineSelector } from './cache';
 import { getFieldErrorAtom, getFieldValueAtom } from './field';
 import getFieldKey from '../utils/getFieldKey';
 
-export const getFormStateAtom = defineAtom<'ready' | 'submitting'>(
-  (key: string) => {
-    return {
-      key: `${key}/$state`,
-      default: 'ready',
-    };
-  }
-);
+export const getFormStateAtom = defineAtom<'ready' | 'submitting'>((key: string) => {
+  return {
+    key: `${key}/$state`,
+    default: 'ready',
+  };
+});
 
 export const getFormFieldsAtom = defineAtom((key: string) => {
   return {
@@ -25,10 +23,7 @@ export const getFormValuesAtom = defineSelector((key: string) => {
       // TODO: DRY (see getFormErrorsAtom.get)
       const fields = get(getFormFieldsAtom(key));
       return Object.fromEntries(
-        Object.entries(fields).map(([fieldKey, fieldName]) => [
-          fieldName,
-          get(getFieldValueAtom(fieldKey)),
-        ])
+        Object.entries(fields).map(([fieldKey, fieldName]) => [fieldName, get(getFieldValueAtom(fieldKey))])
       );
     },
     set({ get, set }, values: any) {
@@ -52,10 +47,7 @@ export const getFormErrorsAtom = defineSelector((key: string) => {
     get({ get }) {
       const fields = get(getFormFieldsAtom(key));
       return Object.fromEntries(
-        Object.entries(fields).map(([fieldKey, fieldName]) => [
-          fieldName,
-          get(getFieldErrorAtom(fieldKey)),
-        ])
+        Object.entries(fields).map(([fieldKey, fieldName]) => [fieldName, get(getFieldErrorAtom(fieldKey))])
       );
     },
     set({ get, set }, values: any) {

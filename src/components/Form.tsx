@@ -7,18 +7,8 @@ import FormKey from '../contexts/FormKey';
 import uniqueId from '../utils/uniqueId';
 import getFieldKey from '../utils/getFieldKey';
 import toPairs from '../utils/toPairs';
-import {
-  getFormErrorsAtom,
-  getFormFieldsAtom,
-  getFormStateAtom,
-  getFormValuesAtom,
-} from '../atoms/form';
-import {
-  getFieldValueAtom,
-  getFieldInitialValueAtom,
-  getFieldTouchedAtom,
-  getFieldErrorAtom,
-} from '../atoms/field';
+import { getFormErrorsAtom, getFormFieldsAtom, getFormStateAtom, getFormValuesAtom } from '../atoms/form';
+import { getFieldValueAtom, getFieldInitialValueAtom, getFieldTouchedAtom, getFieldErrorAtom } from '../atoms/field';
 import { release } from '../atoms/cache';
 
 export interface IFormActions<TValue extends {}> {
@@ -31,10 +21,7 @@ interface IRecoilFormOwnProps<TValue extends {}> {
   onSubmit?(values: TValue, formActions: IFormActions<TValue>): void;
 }
 
-type MergeProps<TTarget extends {}, TSource extends {}> = O.Merge<
-  O.Overwrite<TTarget, TSource>,
-  TSource
->;
+type MergeProps<TTarget extends {}, TSource extends {}> = O.Merge<O.Overwrite<TTarget, TSource>, TSource>;
 
 export type RecoilFormAllProps<TValue extends {}> = MergeProps<
   React.HTMLAttributes<HTMLFormElement>,
@@ -52,17 +39,14 @@ const Form = <TValue extends {}>({
   initialValues = {},
   onSubmit,
   ...props
-}: RecoilFormAllProps<
-  TValue
->): React.ReactComponentElement<typeof FormKey.Provider> => {
+}: RecoilFormAllProps<TValue>): React.ReactComponentElement<typeof FormKey.Provider> => {
   const key = React.useMemo(() => uniqueId(), []);
   const setFormValues = useSetRecoilState(getFormValuesAtom(key));
   const setFormErrors = useSetRecoilState(getFormErrorsAtom(key));
 
   const setValues = React.useCallback(
     (...args) => {
-      const values =
-        args.length === 1 ? args[0] : Object.fromEntries(toPairs(args));
+      const values = args.length === 1 ? args[0] : Object.fromEntries(toPairs(args));
       setFormValues(values);
     },
     [setFormValues]
@@ -70,8 +54,7 @@ const Form = <TValue extends {}>({
 
   const setErrors = React.useCallback(
     (...args) => {
-      const errors =
-        args.length === 1 ? args[0] : Object.fromEntries(toPairs(args));
+      const errors = args.length === 1 ? args[0] : Object.fromEntries(toPairs(args));
       setFormErrors(errors);
     },
     [setFormErrors]

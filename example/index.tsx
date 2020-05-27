@@ -7,19 +7,18 @@ import { Form, Field, ErrorMessage, useFormState, useFormValues } from '../dist'
 
 const initialValues = {
   email: 'some@email.com',
-  delayed: new Promise(resolve =>
-    setTimeout(() => resolve('delayed value'), 3000)
-  ),
+  delayed: new Promise(resolve => setTimeout(() => resolve('delayed value'), 3000)),
 };
 
-const onSubmit = (values, { setValues, setErrors }) => new Promise(resolve =>
-  setTimeout(() => {
-    console.log(values);
-    setValues('email', 'another@email.com', 'delayed', 'another value');
-    setErrors({ email: 'already in use', delayed: 'another error' });
-    resolve();
-  }, 3000)
-);
+const onSubmit = (values, { setValues, setErrors }) =>
+  new Promise(resolve =>
+    setTimeout(() => {
+      console.log(values);
+      setValues('email', 'another@email.com', 'delayed', 'another value');
+      setErrors({ email: 'already in use', delayed: 'another error' });
+      resolve();
+    }, 3000)
+  );
 
 const Values = () => {
   const state = useFormState();
@@ -51,6 +50,13 @@ const FieldSet = () => {
       </div>
       <div>
         <label>
+          Default value:
+          <Field name="default" type="text" defaultValue="hello" />
+          <ErrorMessage name="email" as="div" />
+        </label>
+      </div>
+      <div>
+        <label>
           Delayed field:
           <Field name="delayed" type="text" fallback="loading..." />
           <ErrorMessage name="delayed" as="div" />
@@ -58,8 +64,21 @@ const FieldSet = () => {
       </div>
       <div>
         <label>
-          <Field name="checkbox" type="checkbox" />
+          <Field name="checkbox1" type="checkbox" />
           Checkbox
+        </label>
+      </div>
+      <div>
+        <label>
+          <Field name="checkbox2" type="checkbox" value={42} />
+          Checkbox with value
+        </label>
+      </div>
+
+      <div>
+        <label>
+          <Field name="checkbox3" type="checkbox" value="okay" uncheckedValue="sorry" />
+          Checkbox with both values
         </label>
       </div>
       <div>

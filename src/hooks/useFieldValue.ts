@@ -10,10 +10,7 @@ import { getFieldValueAtom } from '../atoms/field';
  */
 function useFieldValue<TValue>(name: string): TValue | undefined;
 function useFieldValue<TValue>(name: string, initialValue: TValue): TValue;
-function useFieldValue<TValue>(
-  name: string,
-  initialValue?: TValue
-): TValue | undefined {
+function useFieldValue<TValue>(name: string, initialValue?: TValue): TValue | undefined {
   const key = useFieldKey(name);
   const atom = getFieldValueAtom<TValue>(key, initialValue);
   return useRecoilValue(atom);

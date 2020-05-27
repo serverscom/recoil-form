@@ -1,52 +1,63 @@
 import * as React from 'react';
 
-import Input from './Input';
-import Checkbox from './Checkbox';
+import InputField, { IInputFieldProps } from './Input';
+import RadioField, { IRadioFieldProps } from './Radio';
+import FileField, { IFileFieldProps } from './File';
+import CheckboxField, { ICheckboxFieldProps } from './Checkbox';
+import SelectField, { ISelectFieldProps } from './Select';
+import { PolymorphicComponentProps, AnyObject } from '../../utils/types';
 
-interface IRecoilFieldProps extends JSX.IntrinsicAttributes {
-  name: string;
-  type?: string;
-  value?: any;
-  as?: React.ElementType;
-  fallback?: React.ReactNode;
-}
+type GenericFieldProps<C extends React.ElementType, T> = C extends 'select'
+  ? ISelectFieldProps
+  : C extends 'input' | undefined
+  ? T extends 'checkbox'
+    ? ICheckboxFieldProps
+    : T extends 'radio'
+    ? IRadioFieldProps
+    : T extends 'file'
+    ? IFileFieldProps
+    : IInputFieldProps
+  : PolymorphicComponentProps<C>;
 
-const getComponent = (
-  component: React.ElementType,
-  type?: string
-): React.ElementType => {
-  if (component === 'input') {
-    switch (type) {
-      case 'checkbox':
-        return Checkbox;
-      case 'radio':
-        throw new Error('`input` of type `radio` is not supported yet!');
-      case 'file':
-        throw new Error('`input` of `file` is not supported yet!');
-      default:
-        return Input;
-    }
+const isInput = (component: any) => component === undefined || component === 'input';
+
+const isRecoilCheckbox = (props: AnyObject, component: any): props is ICheckboxFieldProps =>
+  isInput(component) && props.type === 'checkbox';
+
+const isRecoilRadio = (props: AnyObject, component: any): props is IRadioFieldProps =>
+  isInput(component) && props.type === 'radio';
+
+const isRecoilFile = (props: AnyObject, component: any): props is IFileFieldProps =>
+  isInput(component) && props.type === 'file';
+
+const isRecoilInput = (props: AnyObject, component: any): props is IInputFieldProps =>
+  isInput(component) && !isRecoilCheckbox(props, component) && !isRecoilRadio(props, component);
+
+const isRecoilSelect = (props: AnyObject, component: any): props is ISelectFieldProps =>
+  props && component === 'select';
+
+const GenericField = <T extends string, C extends React.ElementType = 'input'>(
+  props: { as?: C; type?: T; fallback?: React.ReactNode } & GenericFieldProps<C, T>
+): React.ReactElement => {
+  const { as: component = 'input', fallback = null, ...componentProps } = props;
+
+  let result;
+
+  if (isRecoilSelect(componentProps, component)) {
+    result = <SelectField {...componentProps} />;
+  } else if (isRecoilCheckbox(componentProps, component)) {
+    result = <CheckboxField {...componentProps} />;
+  } else if (isRecoilRadio(componentProps, component)) {
+    result = <RadioField {...componentProps} />;
+  } else if (isRecoilFile(componentProps, component)) {
+    result = <FileField {...componentProps} />;
+  } else if (isRecoilInput(componentProps, component)) {
+    result = <InputField {...componentProps} />;
+  } else {
+    result = React.createElement(component, componentProps);
   }
 
-  if (component === 'select') {
-    throw new Error('`select` is not supported yet');
-  }
-
-  return component;
+  return <React.Suspense fallback={fallback}>{result}</React.Suspense>;
 };
 
-const Field: React.FC<IRecoilFieldProps> = ({
-  type,
-  as = 'input',
-  fallback = null,
-  ...props
-}) => {
-  const Component = getComponent(as, type);
-  return (
-    <React.Suspense fallback={fallback}>
-      <Component {...props} />
-    </React.Suspense>
-  );
-};
-
-export default Field;
+export default GenericField;

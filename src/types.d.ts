@@ -1,3 +1,5 @@
+declare const __DEV__: boolean;
+
 declare module 'recoil' {
   import React from 'react';
 
@@ -47,12 +49,8 @@ declare module 'recoil' {
   >;
 
   function atom<T>(options: AtomOptions<T>): RecoilState<T>;
-  function selector<T>(
-    options: ReadOnlySelectorOptions<T> | ReadWriteSelectorOptions<T>
-  ): RecoilValue<T>;
+  function selector<T>(options: ReadOnlySelectorOptions<T> | ReadWriteSelectorOptions<T>): RecoilValue<T>;
 
   function useRecoilValue<TValue>(state: RecoilValue<TValue>): TValue;
-  function useSetRecoilState<TValue>(
-    state: RecoilState<TValue>
-  ): React.Dispatch<React.SetStateAction<TValue>>;
+  function useSetRecoilState<TValue>(state: RecoilState<TValue>): React.Dispatch<React.SetStateAction<TValue>>;
 }

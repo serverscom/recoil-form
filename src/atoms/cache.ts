@@ -28,9 +28,7 @@ function define<TValue, TArgs extends any[]>(
 ): (...args: TArgs) => RecoilState<TValue>;
 function define<TValue, TArgs extends any[]>(
   creator: typeof selector,
-  optionsGetter: (
-    ...args: TArgs
-  ) => ReadOnlySelectorOptions<TValue> | ReadWriteSelectorOptions<TValue>
+  optionsGetter: (...args: TArgs) => ReadOnlySelectorOptions<TValue> | ReadWriteSelectorOptions<TValue>
 ): (...args: TArgs) => RecoilValue<TValue>;
 function define(creator: any, optionsGetter: any) {
   return (...args: any[]) => {
@@ -53,16 +51,12 @@ function define(creator: any, optionsGetter: any) {
   };
 }
 
-export function defineAtom<TValue, TArgs extends any[] = [string]>(
-  fn: (...args: TArgs) => AtomOptions<TValue>
-) {
+export function defineAtom<TValue, TArgs extends any[] = [string]>(fn: (...args: TArgs) => AtomOptions<TValue>) {
   return define(atom, fn);
 }
 
 export function defineSelector<TValue, TArgs extends any[]>(
-  fn: (
-    ...args: TArgs
-  ) => ReadOnlySelectorOptions<TValue> | ReadWriteSelectorOptions<TValue>
+  fn: (...args: TArgs) => ReadOnlySelectorOptions<TValue> | ReadWriteSelectorOptions<TValue>
 ) {
   return define<TValue, TArgs>(selector, fn);
 }

@@ -1,19 +1,19 @@
 import * as React from 'react';
 import useField from '../../hooks/useField';
 
-export interface IRecoilInputProps extends JSX.IntrinsicAttributes {
+export interface IInputFieldProps extends Omit<React.HTMLProps<HTMLInputElement>, 'value'> {
   name: string;
-  onChange: (event: React.ChangeEvent) => any;
-  onBlur: (event: React.FocusEvent) => any;
+  defaultValue?: string;
 }
 
-const Input: React.FC<IRecoilInputProps> = ({
+const InputField: React.FC<IInputFieldProps> = ({
   name,
+  defaultValue,
   onChange: originalOnChange,
   onBlur: originalOnBlur,
   ...props
 }) => {
-  const [{ onChange, onBlur, ...inputProps }] = useField<string>(name);
+  const [{ onChange, onBlur, ...inputProps }] = useField<string>(name, defaultValue);
 
   const handleChange = React.useCallback(
     event => {
@@ -46,4 +46,4 @@ const Input: React.FC<IRecoilInputProps> = ({
   );
 };
 
-export default Input;
+export default InputField;

@@ -2,14 +2,12 @@ import { defineAtom, defineSelector } from './cache';
 
 import { FIELD_INITIAL_VAlUE } from '../constants';
 
-export const getFieldInitialValueAtom = defineAtom(
-  <TValue>(key: string, value?: TValue) => {
-    return {
-      key: `${key}/$initialValue`,
-      default: value,
-    };
-  }
-);
+export const getFieldInitialValueAtom = defineAtom(<TValue>(key: string, value?: TValue) => {
+  return {
+    key: `${key}/$initialValue`,
+    default: value,
+  };
+});
 
 export const getFieldCurrentValueAtom = defineAtom(<TValue>(key: string) => {
   return {
@@ -18,29 +16,25 @@ export const getFieldCurrentValueAtom = defineAtom(<TValue>(key: string) => {
   };
 });
 
-export const getFieldValueAtom = defineSelector(
-  <TValue>(key: string, initialValue?: TValue) => {
-    const initialValueAtom = getFieldInitialValueAtom(key, initialValue);
-    const currentValueAtom = getFieldCurrentValueAtom<TValue>(key);
+export const getFieldValueAtom = defineSelector(<TValue>(key: string, initialValue?: TValue) => {
+  const initialValueAtom = getFieldInitialValueAtom(key, initialValue);
+  const currentValueAtom = getFieldCurrentValueAtom<TValue>(key);
 
-    return {
-      key: `${key}/$value`,
-      get({ get }) {
-        const currentValue = get(currentValueAtom);
-        return currentValue === FIELD_INITIAL_VAlUE
-          ? get(initialValueAtom)
-          : currentValue;
-      },
-      set({ get, set }, newValue) {
-        const currentValue = get(currentValueAtom);
-        if (currentValue !== newValue) {
-          // only update when value is changed
-          set(currentValueAtom, newValue);
-        }
-      },
-    };
-  }
-);
+  return {
+    key: `${key}/$value`,
+    get({ get }) {
+      const currentValue = get(currentValueAtom);
+      return currentValue === FIELD_INITIAL_VAlUE ? get(initialValueAtom) : currentValue;
+    },
+    set({ get, set }, newValue) {
+      const currentValue = get(currentValueAtom);
+      if (currentValue !== newValue) {
+        // only update when value is changed
+        set(currentValueAtom, newValue);
+      }
+    },
+  };
+});
 
 export const getFieldRefCounterAtom = defineAtom((key: string) => {
   return {
