@@ -10,6 +10,9 @@ const initialValues = {
   delayed: new Promise(resolve => setTimeout(() => resolve('delayed value'), 3000)),
 };
 
+const array = [1, 2, 3, 4, 5];
+const object = { key: 'value' };
+
 const onSubmit = (values, { setValues, setErrors }) =>
   new Promise(resolve =>
     setTimeout(() => {
@@ -70,7 +73,7 @@ const FieldSet = () => {
       </div>
       <div>
         <label>
-          <Field name="checkbox2" type="checkbox" value={42} />
+          <Field name="checkbox2" type="checkbox" value={42} defaultChecked />
           Checkbox with value
         </label>
       </div>
@@ -81,6 +84,26 @@ const FieldSet = () => {
           Checkbox with both values
         </label>
       </div>
+
+      <div>
+        <label>
+          <Field name="radio" type="radio" value="option 1" />
+          Option 1 (string)
+        </label>
+      </div>
+      <div>
+        <label>
+          <Field name="radio" type="radio" value={array} />
+          Option 2 (array)
+        </label>
+      </div>
+      <div>
+        <label>
+          <Field name="radio" type="radio" value={object} defaultChecked />
+          Option 3 (object)
+        </label>
+      </div>
+
       <div>
         <button type="submit">Login</button>
         <button type="reset">Reset</button>

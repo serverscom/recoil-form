@@ -33,7 +33,6 @@ function useField<TValue>(name: string, initialValue?: TValue): Response<TValue 
 
   const setTouched = useSetRecoilState(getFieldTouchedAtom(key));
 
-  // TODO: onBlur
   const onBlur = React.useCallback(() => {
     setTouched(true);
   }, [setTouched]);
