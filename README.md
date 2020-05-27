@@ -61,19 +61,42 @@ If you pass a `Promise` as a field value or initial value, this promise will be 
 
 #### Supported types
 
-##### `type="checkbox"`
+##### Default behaviour (`as="input"` or `as={undefined}` or missed `as` prop)
 
-Renders the checkbox. WIP.
+Renders default input field (except cases when `type` is `"checkbox"`, `"radio"` or `"file"` which are described below)
 
-##### `type="radio"`
+* `name: string` – the name of the field
+* `defaultValue?: string` - field's initial value
+* all other props except `value` are passed down to underlying `input` component. `value` is just ignored.
 
-Not supported yet. WIP.
+##### `type="checkbox"` (works only with `as="input"` or `as={undefined}` or missed `as` prop)
+
+Renders default checkbox field.
+
+* `name: string` – the name of the field
+* `value?: any` - value used when checkbox checked. Default is `true`
+* `uncheckedValue?: any` - value used when checkbox unchecked. Default is `undefined`
+* `defaultChecked?: boolean` - if current checkbox checked or not. If `defaultChecked={true}` then initial value for the field set in `Form.initialValues` is always overridden with `value`.
+* all other props are passed down to underlying `input` component.
+
+##### `type="radio"` (works only with `as="input"` or `as={undefined}` or missed `as` prop)
+
+Renders default radio button.
+
+* `name: string` – the name of the field
+* `value: any` - value used when radio button checked.
+* `defaultChecked?: boolean` - if current radio button checked or not. If `defaultChecked={true}` then initial value for the field set in `Form.initialValues` is overridden with `value`. Keep in mind the case, when more than one radio button has `defaultChecked={true}`. In such case last rendered radio button will be checked and it's value will be used as an initial value for the field.
+* all other props are passed down to underlying `input` component.
 
 ##### `type="file"`
 
 Not supported yet. WIP.
 
-##### `component="select"`
+##### `as="select"`
+
+Not supported yet. WIP.
+
+##### Custom components via `as={MyCustomComponent}`
 
 Not supported yet. WIP.
 

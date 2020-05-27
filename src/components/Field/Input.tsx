@@ -13,7 +13,7 @@ const InputField: React.FC<IInputFieldProps> = ({
   onBlur: originalOnBlur,
   ...props
 }) => {
-  const [{ onChange, onBlur, ...inputProps }] = useField<string>(name, defaultValue);
+  const [{ onChange, onBlur, ...inputProps }] = useField<string>(name, defaultValue, true);
 
   const handleChange = React.useCallback(
     event => {

@@ -11,12 +11,16 @@ const CheckboxField: React.FC<ICheckboxFieldProps> = ({
   name,
   value = true,
   uncheckedValue = undefined,
-  defaultChecked,
+  defaultChecked = false,
   onChange: originalOnChange,
   onBlur: originalOnBlur,
   ...props
 }) => {
-  const [{ onChange, onBlur, ...inputProps }] = useField<any>(name, defaultChecked ? value : uncheckedValue);
+  const [{ onChange, onBlur, ...inputProps }] = useField<any>(
+    name,
+    defaultChecked ? value : uncheckedValue,
+    defaultChecked
+  );
 
   const handleChange = React.useCallback(
     event => {

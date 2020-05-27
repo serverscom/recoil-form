@@ -23,11 +23,15 @@ export interface IFieldHelperProps<TValue> {
 type Response<T> = [IFieldInputProps<T>, {}, IFieldHelperProps<T>];
 
 function useField<TValue>(name: string): Response<TValue | undefined>;
-function useField<TValue>(name: string, initialValue?: TValue): Response<TValue>;
-function useField<TValue>(name: string, initialValue?: TValue): Response<TValue | undefined> {
+function useField<TValue>(name: string, initialValue?: TValue, overrideInitialValue?: boolean): Response<TValue>;
+function useField<TValue>(
+  name: string,
+  initialValue?: TValue,
+  overrideInitialValue?: boolean
+): Response<TValue | undefined> {
   const key = useFieldKey(name);
 
-  const value = useFieldValue(name, initialValue);
+  const value = useFieldValue(name, initialValue, overrideInitialValue);
   const setValue = useSetFieldValue(name);
   const setError = useSetFieldError(name);
 

@@ -8,9 +8,10 @@ import { Form, Field, ErrorMessage, useFormState, useFormValues } from '../dist'
 const initialValues = {
   email: 'some@email.com',
   delayed: new Promise(resolve => setTimeout(() => resolve('delayed value'), 3000)),
+  checkbox3: undefined,
 };
 
-const array = [1, 2, 3, 4, 5];
+const array = [1, 2, 3, 4];
 const object = { key: 'value' };
 
 const onSubmit = (values, { setValues, setErrors }) =>
@@ -93,7 +94,7 @@ const FieldSet = () => {
       </div>
       <div>
         <label>
-          <Field name="radio" type="radio" value={array} />
+          <Field name="radio" type="radio" value={array} defaultChecked />
           Option 2 (array)
         </label>
       </div>

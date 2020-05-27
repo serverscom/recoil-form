@@ -9,12 +9,12 @@ export interface IRadioFieldProps extends React.HTMLProps<HTMLInputElement> {
 const RadioField: React.FC<IRadioFieldProps> = ({
   name,
   value,
-  defaultChecked,
+  defaultChecked = false,
   onChange: originalOnChange,
   onBlur: originalOnBlur,
   ...props
 }) => {
-  const [{ onChange, onBlur, ...inputProps }] = useField<any>(name, defaultChecked ? value : undefined);
+  const [{ onChange, onBlur, ...inputProps }] = useField<any>(name, defaultChecked ? value : undefined, true);
 
   const handleChange = React.useCallback(
     event => {
