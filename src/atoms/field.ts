@@ -1,76 +1,71 @@
-import { defineAtom, defineSelector } from './cache';
+import { atomFamily, RecoilState, selectorFamily } from 'recoil';
 
 import { FIELD_INITIAL_VAlUE } from '../constants';
+type AtomFamily = <T>(key: string) => RecoilState<T>;
 
-export const getFieldInitialValueAtom = defineAtom(<TValue>(key: string, value?: TValue) => {
-  return {
-    key: `${key}/$initialValue`,
-    default: value,
-  };
+export const getFieldInitialValueAtom: AtomFamily = atomFamily<any, string>({
+  key: '$recoil-form/$field/$value/$initial',
+  default: undefined,
 });
 
-export const getFieldCurrentValueAtom = defineAtom(<TValue>(key: string) => {
-  return {
-    key: `${key}/$currentValue`,
-    default: FIELD_INITIAL_VAlUE as TValue | typeof FIELD_INITIAL_VAlUE,
-  };
+export const getFieldCurrentValueAtom: AtomFamily = atomFamily<any, string>({
+  key: '$recoil-form/field/$value/$current',
+  default: FIELD_INITIAL_VAlUE,
 });
 
-export const getFieldValueAtom = defineSelector(<TValue>(key: string, initialValue?: TValue) => {
-  const initialValueAtom = getFieldInitialValueAtom(key, initialValue);
-  const currentValueAtom = getFieldCurrentValueAtom<TValue>(key);
+export const getFieldValueAtom: AtomFamily = selectorFamily<any, string>({
+  key: '$recoil-form/$field/$value',
+  get(param) {
+    const initialValueAtom = getFieldInitialValueAtom(param);
+    const currentValueAtom = getFieldCurrentValueAtom(param);
 
-  return {
-    key: `${key}/$value`,
-    get({ get }) {
+    return ({ get }) => {
       const currentValue = get(currentValueAtom);
       return currentValue === FIELD_INITIAL_VAlUE ? get(initialValueAtom) : currentValue;
-    },
-    set({ get, set }, newValue) {
+    };
+  },
+  set(param) {
+    const currentValueAtom = getFieldCurrentValueAtom(param);
+
+    return ({ get, set }, newValue) => {
       const currentValue = get(currentValueAtom);
       if (currentValue !== newValue) {
         // only update when value is changed
         set(currentValueAtom, newValue);
       }
-    },
-  };
+    };
+  },
 });
 
-export const getFieldRefCounterAtom = defineAtom((key: string) => {
-  return {
-    key: `${key}/$refCounter`,
-    default: 0,
-  };
+export const getFieldRefCounterAtom = atomFamily<number, string>({
+  key: '$recoil-form/$field/$refCounter',
+  default: 0,
 });
 
-export const getFieldTouchedAtom = defineAtom<boolean>((key: string) => {
-  return {
-    key: `${key}/$touched`,
-    default: false,
-  };
+export const getFieldTouchedAtom = atomFamily<boolean, string>({
+  key: '$recoil-form/$field/$touched',
+  default: false,
 });
 
-export const getFieldErrorInternalAtom = defineAtom(<TValue>(key: string) => {
-  return {
-    key: `${key}/$errorAtom`,
-    default: null as TValue | null,
-  };
+export const getFieldErrorInternalAtom: AtomFamily = atomFamily<any, string>({
+  key: '$recoil-form/$field/$error/$internal',
+  default: null,
 });
 
-export const getFieldErrorAtom = defineSelector(<TValue>(key: string) => {
-  const atom = getFieldErrorInternalAtom<TValue>(key);
-
-  return {
-    key: `${key}/$errorSelector`,
-    get({ get }) {
-      return get(atom);
-    },
-    set({ get, set }, error) {
+export const getFieldErrorAtom: AtomFamily = selectorFamily<any, string>({
+  key: '$recoil-form/$field/$error',
+  get(param) {
+    const atom = getFieldErrorInternalAtom(param);
+    return ({ get }) => get(atom);
+  },
+  set(param) {
+    const atom = getFieldErrorInternalAtom(param);
+    return ({ get, set }, error) => {
       const currentError = get(atom);
       if (currentError !== error) {
         // only update when value is changed
         set(atom, error);
       }
-    },
-  };
+    };
+  },
 });

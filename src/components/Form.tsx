@@ -1,5 +1,4 @@
 import * as React from 'react';
-// @ts-expect-error
 import { useRecoilCallback, useSetRecoilState } from 'recoil';
 import { O } from 'ts-toolbelt';
 
@@ -9,7 +8,6 @@ import getFieldKey from '../utils/getFieldKey';
 import toPairs from '../utils/toPairs';
 import { getFormErrorsAtom, getFormFieldsAtom, getFormStateAtom, getFormValuesAtom } from '../atoms/form';
 import { getFieldValueAtom, getFieldInitialValueAtom, getFieldTouchedAtom, getFieldErrorAtom } from '../atoms/field';
-import { release } from '../atoms/cache';
 
 export interface IFormActions<TValue extends {}> {
   setErrors(field: keyof TValue, error: any): void;
@@ -128,8 +126,7 @@ const Form = <TValue extends {}>({
 
   React.useEffect(() => {
     setInitialValues();
-    return () => release(key);
-  }, [setInitialValues, key]);
+  }, [setInitialValues]);
 
   return (
     <FormKey.Provider value={key}>

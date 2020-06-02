@@ -1,12 +1,4 @@
-import {
-  atom,
-  selector,
-  AtomOptions,
-  RecoilState,
-  ReadOnlySelectorOptions,
-  ReadWriteSelectorOptions,
-  RecoilValue,
-} from 'recoil';
+import { atom, selector, AtomOptions, RecoilState, ReadOnlySelectorOptions, ReadWriteSelectorOptions } from 'recoil';
 
 const VALUE = Symbol('value');
 
@@ -29,7 +21,7 @@ function define<TValue, TArgs extends any[]>(
 function define<TValue, TArgs extends any[]>(
   creator: typeof selector,
   optionsGetter: (...args: TArgs) => ReadOnlySelectorOptions<TValue> | ReadWriteSelectorOptions<TValue>
-): (...args: TArgs) => RecoilValue<TValue>;
+): (...args: TArgs) => RecoilState<TValue>;
 function define(creator: any, optionsGetter: any) {
   return (...args: any[]) => {
     const options = optionsGetter(...args);

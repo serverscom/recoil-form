@@ -1,5 +1,5 @@
-let id = Date.now();
+let id = 0;
 
 export default function uniqueId() {
-  return `__RECOIL_FORM_${id++}__`;
+  return `${++id}`;
 }

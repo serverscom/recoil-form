@@ -17,8 +17,7 @@ function useFieldValue<TValue>(
   overrideInitialValue?: boolean
 ): TValue | undefined {
   const key = useFieldKey(name);
-  // atom is memoized, so only first passed initial value will be saved
-  const atom = getFieldValueAtom<TValue>(key, initialValue);
+  const atom = getFieldValueAtom<TValue>(key);
 
   const value = useRecoilValue(atom);
   const setInitialValue = useSetRecoilState(getFieldInitialValueAtom(key));
