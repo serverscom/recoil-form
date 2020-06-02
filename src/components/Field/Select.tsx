@@ -5,7 +5,7 @@ export interface ISelectFieldProps extends Omit<React.HTMLProps<HTMLSelectElemen
 }
 
 const SelectField = (/* props: ISelectFieldProps */): React.ReactElement => {
-  throw new Error('`input` of type `radio` is not supported yet!');
+  throw new Error('`input` of type `select` is not supported yet!');
 };
 
 export default SelectField;
