@@ -61,16 +61,15 @@
   },
   "peerDependencies": {
     "react": ">=16",
-    "recoil": ">=0.0.8"
+    "recoil": ">=0.0.10"
   },
   "devDependencies": {
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
-    "@types/recoil": "^0.0.0",
     "husky": "^4.2.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "recoil": "^0.0.8",
+    "recoil": "^0.0.10",
     "ts-toolbelt": "^6.7.7",
     "tsdx": "^0.13.2",
     "tslib": "^2.0.0",
