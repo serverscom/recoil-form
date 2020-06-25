@@ -1,6 +1,6 @@
 {
   "name": "recoil-form",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Blazing fast React forms build on top of Recoil",
   "keywords": [
     "recoil",
