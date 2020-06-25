@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useRecoilCallback, useSetRecoilState } from 'recoil';
+import { useRecoilCallback, useSetRecoilState, CallbackInterface } from 'recoil';
 import { O } from 'ts-toolbelt';
 
 import FormKey from '../contexts/FormKey';
@@ -25,13 +25,6 @@ export type RecoilFormAllProps<TValue extends {}> = MergeProps<
   React.HTMLAttributes<HTMLFormElement>,
   IRecoilFormOwnProps<TValue>
 >;
-
-interface IRecoilCallbackParams {
-  getPromise: (atom: any) => Promise<any>;
-  getLoadable: (atom: any) => any;
-  set: (atom: any, value: any) => void;
-  reset: (atom: any) => void;
-}
 
 const Form = <TValue extends {}>({
   initialValues = {},
@@ -59,7 +52,7 @@ const Form = <TValue extends {}>({
   );
 
   const setInitialValues = useRecoilCallback(
-    async ({ set }: IRecoilCallbackParams) => {
+    ({ set }: CallbackInterface) => async () => {
       Object.entries(initialValues).forEach(([fieldName, fieldValue]) => {
         const fieldKey = getFieldKey(key, fieldName);
         set(getFieldInitialValueAtom(fieldKey), fieldValue);
@@ -69,8 +62,8 @@ const Form = <TValue extends {}>({
   );
 
   const resetForm = useRecoilCallback(
-    async ({ getPromise, reset }: IRecoilCallbackParams) => {
-      const fields = await getPromise(getFormFieldsAtom(key));
+    ({ snapshot, reset }: CallbackInterface) => async () => {
+      const fields = await snapshot.getPromise(getFormFieldsAtom(key));
       Object.keys(fields).forEach(fieldKey => {
         reset(getFieldValueAtom(fieldKey));
         reset(getFieldTouchedAtom(fieldKey));
@@ -90,18 +83,18 @@ const Form = <TValue extends {}>({
   );
 
   const submitForm = useRecoilCallback(
-    async ({ getPromise, set }: IRecoilCallbackParams) => {
+    ({ snapshot, set }: CallbackInterface) => async () => {
       if (onSubmit === undefined) {
         return;
       }
 
       set(getFormStateAtom(key), 'submitting');
-      const fields = await getPromise(getFormFieldsAtom(key));
+      const fields = await snapshot.getPromise(getFormFieldsAtom(key));
       Object.keys(fields).forEach(fieldKey => {
         const atom = getFieldTouchedAtom(fieldKey);
         set(atom, true);
       });
-      const values = await getPromise(getFormValuesAtom(key));
+      const values = (await snapshot.getPromise(getFormValuesAtom(key))) as TValue;
       await onSubmit(values, formActions);
       set(getFormStateAtom(key), 'ready');
     },
