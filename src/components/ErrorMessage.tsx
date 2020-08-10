@@ -1,7 +1,7 @@
 import * as React from 'react';
 import useFieldError from '../hooks/useFieldError';
 import useFieldTouched from '../hooks/useFieldTouched';
-import { PolymorphicComponentProps } from 'utils/types';
+import { PolymorphicComponentProps } from '../utils/types';
 
 const ErrorMessage = <C extends React.ElementType = 'small'>(
   props: { as?: C; name: string } & PolymorphicComponentProps<C>
